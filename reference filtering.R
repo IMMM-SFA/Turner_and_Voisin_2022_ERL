@@ -6,7 +6,6 @@ library(stringr)
 library(ggplot2)
 
 # read in the references as a data frame
-
 list.files("REFS", full.names = T) -> all_ref_files
 
 all_ref_files %>% 
@@ -36,9 +35,7 @@ read_csv("journal_reports.csv", skip = 1,
          journal = str_replace_all(journal, "[[:punct:]]", " "),
          journal = str_squish(journal)) -> all_journal_scores
 
-all_journal_scores %>% filter(grepl("renewable", journal))
-
-
+# add impact factors
 all_refs_1 %>% 
   select(id, journal) %>% 
   mutate(journal = str_to_lower(journal),
@@ -46,14 +43,11 @@ all_refs_1 %>%
          journal = str_squish(journal)) %>% 
   left_join(all_journal_scores, by = "journal") ->
   all_refs_with_IF
-  
-all_refs_with_IF %>%
-  select(journal, IF, ES) %>% unique() %>% 
-  arrange(-IF) %>% 
-  filter(ES > 0.005 & IF > 3) %>% print(n=200)
 
+# screen for IF > 4 and ES > 0.005
 all_refs_with_IF %>% 
   filter(ES > 0.005 & IF > 4.0) %>%
+  # remove undesired journals by excluding the following strings
   filter(!grepl("geology", journal),
          !grepl("bio", journal),
          !grepl("ecol", journal),
@@ -109,11 +103,6 @@ all_refs_2 %>%
 
 all_refs_2 %>% 
   filter(!journal %in% journals_to_drop) %>% 
-  # mutate(journal = if_else(count == 1, "others", journal)) %>%
-  # unique() %>%
-  # mutate(journal = factor(journal, levels = rev(.$journal))) %>%
-  # ggplot(aes(journal, count)) +
-  # geom_bar(stat = "identity") + coord_flip()
   .[["id"]] -> final_cut
 
 all_refs %>% filter(id %in% final_cut) %>%
@@ -121,9 +110,7 @@ all_refs %>% filter(id %in% final_cut) %>%
   filter(!grepl("case study", title)) %>% 
   filter(!grepl("Case Study", title)) %>% unique() %>% 
   readr::write_csv("hydro_impact_refs.csv")
-  
-  #filter(grepl("China", title)) %>% View()
-  #filter(grepl("Turner", author))
+
 
 
 
