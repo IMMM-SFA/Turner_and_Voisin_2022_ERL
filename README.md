@@ -1,9 +1,9 @@
 # Turner_and_Voisin_2022_ERL
 
 ### Contents
-*REFS/*                   directory containing .bib files from Web of Science search (below).
-*journal_reports.csv*     metadata on journals.
-*reference filteriung.R*  R script for screening references to final list.
+- /REFS---directory containing .bib files from Web of Science search (below).
+- journal_reports.csv---metadata on journals.
+- reference filteriung.R---R script for screening references to final list.
 
 
 
